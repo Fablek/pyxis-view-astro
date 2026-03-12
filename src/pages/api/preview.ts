@@ -6,7 +6,8 @@ export const GET: APIRoute = async ({ request, cookies, redirect }) => {
     const expires = url.searchParams.get('expires');
     const signature = url.searchParams.get('signature');
 
-    const verifyUrl = `http://pyxis-admin:8000/api/preview/verify?path=${path}&expires=${expires}&signature=${signature}`;
+    const internalUrl = import.meta.env.INTERNAL_API_URL;
+    const verifyUrl = `${internalUrl}/api/preview/verify?path=${path}&expires=${expires}&signature=${signature}`;
     
     try {
         const response = await fetch(verifyUrl);
