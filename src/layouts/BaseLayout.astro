@@ -1,0 +1,40 @@
+---
+import '../styles/global.css';
+const { title, isPreview } = Astro.props;
+---
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title} | Pyxis CMS</title>
+</head>
+<body class="bg-gray-50 text-gray-900 flex flex-col min-h-screen">
+    
+    {isPreview && (
+        <div class="bg-amber-400 text-black py-1 text-center text-xs font-bold uppercase tracking-widest">
+            Tryb Podglądu
+        </div>
+    )}
+    
+    <nav class="bg-white border-b border-gray-200 py-4 shadow-sm">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="/" class="text-xl font-bold text-indigo-600 tracking-tight">Pyxis CMS</a>
+            <div class="space-x-4 text-sm font-medium text-gray-600">
+                <a href="/" class="hover:text-indigo-600 transition">Strona główna</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-1">
+        <slot />
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-500 text-sm">
+                &copy; {new Date().getFullYear()} Pyxis CMS. Built with Astro & Tailwind v4.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

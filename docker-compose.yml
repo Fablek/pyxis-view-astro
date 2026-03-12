@@ -1,0 +1,17 @@
+services:
+  view:
+    build: .
+    container_name: pyxis-view-astro
+    ports:
+      - "3000:4321"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - PUBLIC_API_URL=http://admin:8000/api
+    networks:
+      - pyxis-network
+
+networks:
+  pyxis-network:
+    external: true

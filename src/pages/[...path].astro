@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const { path } = Astro.params;
+const previewToken = Astro.cookies.get('pyxis_preview')?.value;
+const API_URL = "http://pyxis-admin:8000/api";
+const fetchUrl = path ? `${API_URL}/pages/${path}` : `${API_URL}/pages`;
+
+const res = await fetch(fetchUrl, {
+  headers: {
+    'Accept': 'application/json',
+    ...(previewToken ? { 'X-Pyxis-Preview': previewToken } : {})
+  }
+});
+
+if (!res.ok) return Astro.redirect('/404');
+const { data } = await res.json();
+---
+
+<BaseLayout title={data.title} isPreview={data.is_preview}>
+    <main class="container mx-auto px-4 py-12">
+        <header class="mb-12">
+            <h1 class="text-5xl font-black text-gray-900 mb-4">{data.title}</h1>
+            <div class="h-1 w-20 bg-indigo-500"></div>
+        </header>
+
+        <article class="prose prose-indigo prose-xl max-w-none">
+            <Fragment set:html={data.content_rendered} />
+        </article>
+    </main>
+</BaseLayout>
