@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const { path } = Astro.params;
 const previewToken = Astro.cookies.get('pyxis_preview')?.value;
+
 const API_URL = "http://pyxis-admin:8000/api";
 const fetchUrl = path ? `${API_URL}/pages/${path}` : `${API_URL}/pages`;
 
