@@ -1,4 +1,4 @@
-import type { PyxisBlock } from '../lib/pyxis/types';
+import type { PyxisBlock } from '@/lib/pyxis/types';
 import Test from './Test.astro';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
