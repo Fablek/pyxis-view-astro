@@ -1,32 +1,25 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import BlockRenderer from '../components/pyxis/BlockRenderer.astro';
+import { fetchPage } from '../lib/pyxis/api';
 
 const { path } = Astro.params;
 const previewToken = Astro.cookies.get('pyxis_preview')?.value;
 
-const INTERNAL_API = import.meta.env.INTERNAL_API_URL;
-const fetchUrl = path ? `${INTERNAL_API}/api/pages/${path}` : `${INTERNAL_API}/api/pages`;
+const page = await fetchPage(path, previewToken);
 
-const res = await fetch(fetchUrl, {
-  headers: {
-    'Accept': 'application/json',
-    ...(previewToken ? { 'X-Pyxis-Preview': previewToken } : {})
-  }
-});
-
-if (!res.ok) return Astro.redirect('/404');
-const { data } = await res.json();
+if (!page) {
+  return Astro.redirect('/404');
+}
 ---
 
-<BaseLayout title={data.title} isPreview={data.is_preview}>
-    <main class="container mx-auto px-4 py-12">
-        <header class="mb-12">
-            <h1 class="text-5xl font-black text-gray-900 mb-4">{data.title}</h1>
-            <div class="h-1 w-20 bg-indigo-500"></div>
-        </header>
+<BaseLayout title={page.title} isPreview={page.is_preview}>
+  <div class="container mx-auto px-4 py-12">
+    <header class="mb-12">
+      <h1 class="text-5xl font-black text-gray-900 mb-4">{page.title}</h1>
+      <div class="h-1 w-20 bg-indigo-500"></div>
+    </header>
 
-        <article class="prose prose-indigo prose-xl max-w-none">
-            <Fragment set:html={data.content_rendered} />
-        </article>
-    </main>
+    <BlockRenderer blocks={page.content} isPreview={page.is_preview} />
+  </div>
 </BaseLayout>

@@ -1,0 +1,19 @@
+---
+import type { PyxisBlock } from '../../lib/pyxis/types';
+
+interface Props {
+  block: PyxisBlock;
+}
+
+const { block } = Astro.props;
+---
+
+<section class="my-6 rounded-lg border-2 border-dashed border-amber-400 bg-amber-50 p-4 text-sm text-amber-900">
+  <p class="font-semibold">
+    Brak komponentu dla bloku <code class="rounded bg-amber-100 px-1">{block.type}</code>
+  </p>
+  <p class="mt-1">
+    Utwórz komponent w <code>src/blocks/</code> i zarejestruj go w <code>src/blocks/index.ts</code>.
+  </p>
+  <pre class="mt-3 overflow-x-auto rounded bg-white/70 p-3 text-xs">{JSON.stringify(block.data, null, 2)}</pre>
+</section>

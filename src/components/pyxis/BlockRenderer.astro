@@ -1,0 +1,25 @@
+---
+import type { PyxisBlock } from '../../lib/pyxis/types';
+import { blocks as registry } from '../../blocks';
+import MissingBlock from './MissingBlock.astro';
+
+interface Props {
+  blocks: PyxisBlock[] | null;
+  isPreview?: boolean;
+}
+
+const { blocks, isPreview = false } = Astro.props;
+
+// Developers and editors see blocks without a component; site visitors do not.
+const showMissingBlocks = import.meta.env.DEV || isPreview;
+---
+
+{(blocks ?? []).map((block) => {
+  const Component = registry[block.type];
+
+  if (Component) {
+    return <Component block={block} />;
+  }
+
+  return showMissingBlocks ? <MissingBlock block={block} /> : null;
+})}

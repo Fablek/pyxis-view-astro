@@ -28,6 +28,6 @@ export const GET: APIRoute = async ({ request, cookies, redirect }) => {
         return redirect(redirectPath);
 
     } catch (e) {
-        return new Response('Błąd połączenia z API: ' + e.message, { status: 500 });
+        return new Response('Błąd połączenia z API: ' + (e instanceof Error ? e.message : String(e)), { status: 500 });
     }
 }
