@@ -1,0 +1,24 @@
+---
+import type { PyxisBlock, PyxisMedia } from '@/lib/pyxis/types';
+
+interface Props {
+  block: PyxisBlock<{
+    obrazek: PyxisMedia | null;
+  }>;
+}
+
+const { obrazek } = Astro.props.block.data;
+---
+
+{obrazek?.url && (
+  <figure class="my-10">
+    <img
+      src={obrazek.url}
+      alt={obrazek.alt ?? ''}
+      width={obrazek.width ?? undefined}
+      height={obrazek.height ?? undefined}
+      class="w-full rounded-2xl"
+    />
+    {obrazek.title && <figcaption class="mt-2 text-sm text-gray-500">{obrazek.title}</figcaption>}
+  </figure>
+)}
