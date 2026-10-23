@@ -7,7 +7,9 @@ export const POST: APIRoute = async ({ request }) => {
 
         // Check if secret token is valid
         // Set REVALIDATE_TOKEN in both apps
-        if (secret !== import.meta.env.REVALIDATE_TOKEN) {
+        const expectedToken = import.meta.env.REVALIDATE_TOKEN;
+
+        if (!expectedToken || secret !== expectedToken) {
             return new Response(JSON.stringify({ message: "Invalid token" }), {
                 status: 401,
             });
