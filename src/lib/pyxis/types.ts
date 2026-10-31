@@ -27,6 +27,14 @@ export interface PyxisLink {
   new_tab: boolean | null;
 }
 
+/** SEO metadata of a page; always present, empty values are null (noindex: false). */
+export interface PyxisSeo {
+  title: string | null;
+  description: string | null;
+  og_image: PyxisMedia | null;
+  noindex: boolean;
+}
+
 /** Values of one field group: field name → value. Narrow the type in your block components. */
 export type PyxisFieldValues = Record<string, unknown>;
 
@@ -44,7 +52,7 @@ export interface PyxisPage {
   content: PyxisBlock[] | null;
   /** Static page fields, grouped by the field group slug. */
   fields: Record<string, PyxisFieldValues> | null;
-  seo: Record<string, unknown> | null;
+  seo: PyxisSeo;
   full_url: string;
   published_at: string | null;
   is_password_protected: boolean;
