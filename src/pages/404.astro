@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { fetchSite } from '@/lib/pyxis/client';
+import { getTranslations } from '@/lib/translations';
+
+const t = getTranslations((await fetchSite()).language);
+
+Astro.response.status = 404;
+---
+
+<BaseLayout title={t.notFoundTitle} seo={{ title: null, description: null, og_image: null, noindex: true }}>
+  <div class="container mx-auto px-4 py-24 text-center">
+    <p class="text-7xl font-black text-indigo-600 mb-6">404</p>
+    <h1 class="text-4xl font-black text-gray-900 mb-4">{t.notFoundTitle}</h1>
+    <p class="text-gray-600 mb-10">{t.notFoundText}</p>
+    <a href="/" class="inline-block bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
+      {t.backHome}
+    </a>
+  </div>
+</BaseLayout>

@@ -1,4 +1,4 @@
-import type { PyxisPage } from './types';
+import type { PyxisPage, PyxisSite } from './types';
 
 const API_URL = import.meta.env.INTERNAL_API_URL;
 
@@ -28,4 +28,30 @@ export async function fetchPage(path: string | undefined, previewToken?: string)
   const { data } = (await response.json()) as { data: PyxisPage };
 
   return data;
+}
+
+/** Used when the CMS cannot be reached, so the layout and error pages still render. */
+const DEFAULT_SITE: PyxisSite = { language: 'pl' };
+
+/**
+ * Fetches the site-wide settings from Pyxis CMS (e.g. the language for <html lang>).
+ * Falls back to the defaults when the API is not available.
+ */
+export async function fetchSite(): Promise<PyxisSite> {
+  try {
+    const response = await fetch(`${API_URL}/api/site`, {
+      headers: { Accept: 'application/json' },
+      signal: AbortSignal.timeout(5000),
+    });
+
+    if (!response.ok) {
+      return DEFAULT_SITE;
+    }
+
+    const { data } = (await response.json()) as { data: PyxisSite };
+
+    return data;
+  } catch {
+    return DEFAULT_SITE;
+  }
 }

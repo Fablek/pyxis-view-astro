@@ -1,5 +1,5 @@
 /**
- * Types of the Pyxis CMS Headless API (GET /api/pages/{slug}).
+ * Types of the Pyxis CMS Headless API (GET /api/pages/{slug}, GET /api/site).
  * Docs: https://pyxis-cms-docs.vercel.app/pl/api/pages
  */
 
@@ -57,4 +57,10 @@ export interface PyxisPage {
   published_at: string | null;
   is_password_protected: boolean;
   is_preview: boolean;
+}
+
+/** Site-wide settings (GET /api/site). */
+export interface PyxisSite {
+  /** Site language set in the CMS settings, e.g. "pl" or "en". */
+  language: string;
 }

@@ -8,8 +8,9 @@ const previewToken = Astro.cookies.get('pyxis_preview')?.value;
 
 const page = await fetchPage(path, previewToken);
 
+// Renders the 404 page under the requested address, with the 404 status (no redirect).
 if (!page) {
-  return Astro.redirect('/404');
+  return Astro.rewrite('/404');
 }
 ---
 
