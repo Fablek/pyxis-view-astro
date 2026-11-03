@@ -1,0 +1,28 @@
+---
+import type { PyxisBlock, PyxisLink } from '@/lib/pyxis/types';
+
+interface Props {
+  block: PyxisBlock<{
+    naglowek: string | null;
+    opis: string | null;
+    przycisk: PyxisLink | null;
+  }>;
+}
+
+const { naglowek, opis, przycisk } = Astro.props.block.data;
+---
+
+<section class="my-10 rounded-3xl bg-indigo-600 px-8 py-16 text-white md:px-14">
+  {naglowek && <h2 class="max-w-3xl text-4xl font-black tracking-tight md:text-5xl">{naglowek}</h2>}
+  {opis && <p class="mt-6 max-w-2xl text-lg text-indigo-100">{opis}</p>}
+  {przycisk?.url && przycisk.title && (
+    <a
+      href={przycisk.url}
+      target={przycisk.new_tab ? '_blank' : undefined}
+      rel={przycisk.new_tab ? 'noopener noreferrer' : undefined}
+      class="mt-10 inline-block rounded-lg bg-white px-6 py-3 font-semibold text-indigo-700 transition hover:bg-indigo-50"
+    >
+      {przycisk.title}
+    </a>
+  )}
+</section>

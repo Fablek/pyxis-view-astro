@@ -1,5 +1,5 @@
 /**
- * Texts of the starter's own interface (navigation, preview bar, error page) in the site languages.
+ * Texts of the starter's own interface (navigation, preview bar, error page, form) in the site languages.
  * Page content comes from the CMS and is not translated here.
  */
 const translations = {
@@ -11,6 +11,8 @@ const translations = {
     notFoundTitle: 'Nie znaleziono strony',
     notFoundText: 'Strona, której szukasz, nie istnieje lub nie jest już dostępna.',
     backHome: 'Wróć na stronę główną',
+    formSubmit: 'Wyślij',
+    formError: 'Nie udało się wysłać formularza. Spróbuj ponownie.',
   },
   en: {
     home: 'Home',
@@ -20,6 +22,8 @@ const translations = {
     notFoundTitle: 'Page not found',
     notFoundText: 'The page you are looking for does not exist or is no longer available.',
     backHome: 'Back to the homepage',
+    formSubmit: 'Send',
+    formError: 'The form could not be sent. Please try again.',
   },
 };
 

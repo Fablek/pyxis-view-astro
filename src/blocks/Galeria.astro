@@ -1,0 +1,29 @@
+---
+import type { PyxisBlock, PyxisMedia } from '@/lib/pyxis/types';
+
+interface Props {
+  block: PyxisBlock<{
+    zdjecia: PyxisMedia[] | null;
+  }>;
+}
+
+const images = (Astro.props.block.data.zdjecia ?? []).filter((image) => image.url);
+---
+
+{images.length > 0 && (
+  <div class="my-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {images.map((image) => (
+      <figure>
+        <img
+          src={image.url}
+          alt={image.alt ?? ''}
+          width={image.width ?? undefined}
+          height={image.height ?? undefined}
+          loading="lazy"
+          class="aspect-[16/10] w-full rounded-xl object-cover object-top shadow-sm ring-1 ring-gray-200"
+        />
+        {(image.title ?? image.alt) && <figcaption class="mt-2 text-sm text-gray-500">{image.title ?? image.alt}</figcaption>}
+      </figure>
+    ))}
+  </div>
+)}

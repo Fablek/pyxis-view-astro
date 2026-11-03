@@ -1,0 +1,18 @@
+---
+import type { PyxisBlock } from '@/lib/pyxis/types';
+
+interface Props {
+  block: PyxisBlock<{
+    naglowek: string | null;
+    tresc: string | null;
+  }>;
+}
+
+const { naglowek, tresc } = Astro.props.block.data;
+---
+
+<section class="my-10 max-w-3xl">
+  {naglowek && <h2 class="mb-4 text-3xl font-bold text-gray-900">{naglowek}</h2>}
+  {/* HTML from the CMS rich editor, written by the site's editors. */}
+  {tresc && <div class="pyxis-prose" set:html={tresc} />}
+</section>

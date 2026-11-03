@@ -1,0 +1,134 @@
+---
+import type { PyxisBlock } from '@/lib/pyxis/types';
+import { fetchSite } from '@/lib/pyxis/client';
+import { getTranslations } from '@/lib/translations';
+
+/** Form definition returned by the "Formularz" field of the pyxis-forms plugin. */
+interface PyxisForm {
+  id: string;
+  title: string;
+  fields: {
+    type: 'text' | 'email' | 'textarea' | 'select' | 'checkbox';
+    name: string;
+    label: string;
+    required: boolean;
+    options: string[] | null;
+  }[];
+  honeypot: string;
+  submit_url: string;
+}
+
+interface Props {
+  block: PyxisBlock<{
+    formularz: PyxisForm | null;
+  }>;
+}
+
+const form = Astro.props.block.data.formularz;
+const t = getTranslations((await fetchSite()).language);
+const inputClass = 'w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200';
+---
+
+{form && (
+  <section class="my-10 max-w-2xl rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+    <h2 class="mb-6 text-2xl font-bold text-gray-900">{form.title}</h2>
+
+    <form
+      data-pyxis-form
+      data-submit-url={form.submit_url}
+      data-error-message={t.formError}
+      class="space-y-5"
+      novalidate
+    >
+      {form.fields.map((field) => (
+        <div>
+          {field.type === 'checkbox' ? (
+            <label class="flex items-center gap-3">
+              <input type="checkbox" name={field.name} value="1" required={field.required} class="h-4 w-4 rounded border-gray-300" />
+              <span class="text-gray-700">{field.label}</span>
+            </label>
+          ) : (
+            <>
+              <label for={`${form.id}-${field.name}`} class="mb-1.5 block font-medium text-gray-700">
+                {field.label}{field.required && <span class="text-red-500"> *</span>}
+              </label>
+              {field.type === 'textarea' ? (
+                <textarea id={`${form.id}-${field.name}`} name={field.name} rows="5" required={field.required} class={inputClass} />
+              ) : field.type === 'select' ? (
+                <select id={`${form.id}-${field.name}`} name={field.name} required={field.required} class={inputClass}>
+                  <option value="">—</option>
+                  {(field.options ?? []).map((option) => <option value={option}>{option}</option>)}
+                </select>
+              ) : (
+                <input id={`${form.id}-${field.name}`} type={field.type} name={field.name} required={field.required} class={inputClass} />
+              )}
+            </>
+          )}
+          <p data-error-for={field.name} class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+      ))}
+
+      {/* Spam trap: bots fill it in, people do not see it. */}
+      <input type="text" name={form.honeypot} tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden" />
+
+      <button type="submit" class="rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60">
+        {t.formSubmit}
+      </button>
+
+      <p data-form-status role="status" class="hidden rounded-lg px-4 py-3"></p>
+    </form>
+  </section>
+)}
+
+<script>
+  /**
+   * Sends every form rendered by the Formularz block to the pyxis-forms API and shows the result.
+   */
+  document.querySelectorAll<HTMLFormElement>('form[data-pyxis-form]').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const status = form.querySelector<HTMLElement>('[data-form-status]')!;
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      const values = Object.fromEntries(new FormData(form));
+
+      form.querySelectorAll<HTMLElement>('[data-error-for]').forEach((error) => error.classList.add('hidden'));
+      status.classList.add('hidden');
+      button.disabled = true;
+
+      const showStatus = (message: string, isSuccess: boolean) => {
+        status.textContent = message;
+        status.className = `rounded-lg px-4 py-3 ${isSuccess ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`;
+      };
+
+      try {
+        const response = await fetch(form.dataset.submitUrl!, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(values),
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+          form.reset();
+          showStatus(result.message, true);
+        } else if (response.status === 422) {
+          Object.entries(result.errors as Record<string, string[]>).forEach(([name, messages]) => {
+            const error = form.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
+
+            if (error) {
+              error.textContent = messages[0];
+              error.classList.remove('hidden');
+            }
+          });
+        } else {
+          showStatus(result.message ?? form.dataset.errorMessage, false);
+        }
+      } catch {
+        showStatus(form.dataset.errorMessage!, false);
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+</script>

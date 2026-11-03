@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+/* Content of the rich editor (the "Tekst" block): HTML from the CMS without Tailwind classes. */
+@layer components {
+  .pyxis-prose {
+    @apply space-y-4 text-lg leading-relaxed text-gray-700;
+  }
+
+  .pyxis-prose h2 {
+    @apply text-2xl font-bold text-gray-900;
+  }
+
+  .pyxis-prose h3 {
+    @apply text-xl font-bold text-gray-900;
+  }
+
+  .pyxis-prose a {
+    @apply font-medium text-indigo-600 underline hover:no-underline;
+  }
+
+  .pyxis-prose strong {
+    @apply font-semibold text-gray-900;
+  }
+
+  .pyxis-prose ul {
+    @apply list-disc space-y-2 pl-6;
+  }
+
+  .pyxis-prose ol {
+    @apply list-decimal space-y-2 pl-6;
+  }
+
+  .pyxis-prose blockquote {
+    @apply border-l-4 border-indigo-200 pl-4 italic;
+  }
+}
