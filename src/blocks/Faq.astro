@@ -1,0 +1,35 @@
+---
+import type { PyxisBlock } from '@/lib/pyxis/types';
+import { container, index, label } from '@/lib/ui';
+import Icon from '@/components/Icon.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+
+interface Props {
+  block: PyxisBlock<{
+    naglowek: string | null;
+    pytania: { pytanie: string | null; odpowiedz: string | null }[] | null;
+  }>;
+}
+
+const { naglowek, pytania } = Astro.props.block.data;
+---
+
+<section class="border-b border-neutral-200 py-16">
+  <div class={container}>
+    <SectionHeading heading={naglowek} />
+
+    <div class={`border-t border-ink ${naglowek ? 'mt-12' : ''}`}>
+      {(pytania ?? []).map((item, position) => (
+        <details class="group border-b border-neutral-200" open={position === 0}>
+          <summary class="grid cursor-pointer list-none grid-cols-[3rem_1fr_auto] items-center gap-4 py-5 text-left [&::-webkit-details-marker]:hidden md:grid-cols-[6rem_1fr_auto]">
+            <span class={`${label} text-neutral-400`}>{index(position)}</span>
+            <span class="font-medium text-ink">{item.pytanie}</span>
+            <Icon name="plus" class="h-5 w-5 text-ink transition-transform group-open:rotate-45" />
+          </summary>
+          {/* HTML from the CMS rich editor, written by the site's editors. */}
+          {item.odpowiedz && <div class="pyxis-prose max-w-3xl pb-7 pl-[4rem] !text-base md:pl-[7rem]" set:html={item.odpowiedz} />}
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

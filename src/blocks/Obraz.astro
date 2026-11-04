@@ -1,5 +1,6 @@
 ---
 import type { PyxisBlock, PyxisMedia } from '@/lib/pyxis/types';
+import { container, label } from '@/lib/ui';
 
 interface Props {
   block: PyxisBlock<{
@@ -11,14 +12,10 @@ const { obrazek } = Astro.props.block.data;
 ---
 
 {obrazek?.url && (
-  <figure class="my-10">
-    <img
-      src={obrazek.url}
-      alt={obrazek.alt ?? ''}
-      width={obrazek.width ?? undefined}
-      height={obrazek.height ?? undefined}
-      class="w-full rounded-2xl"
-    />
-    {obrazek.title && <figcaption class="mt-2 text-sm text-gray-500">{obrazek.title}</figcaption>}
-  </figure>
+  <section class="border-b border-neutral-200 py-14">
+    <figure class={container}>
+      <img src={obrazek.url} alt={obrazek.alt ?? ''} width={obrazek.width ?? undefined} height={obrazek.height ?? undefined} loading="lazy" class="w-full border border-ink" />
+      {(obrazek.title ?? obrazek.alt) && <figcaption class={`${label} mt-3 text-neutral-500`}>↳ {obrazek.title ?? obrazek.alt}</figcaption>}
+    </figure>
+  </section>
 )}

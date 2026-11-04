@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { fetchSite } from '@/lib/pyxis/client';
 import { getTranslations } from '@/lib/translations';
+import { buttonClass, container, label } from '@/lib/ui';
 
 const t = getTranslations((await fetchSite()).language);
 
@@ -9,12 +10,12 @@ Astro.response.status = 404;
 ---
 
 <BaseLayout title={t.notFoundTitle} seo={{ title: null, description: null, og_image: null, noindex: true }}>
-  <div class="container mx-auto px-4 py-24 text-center">
-    <p class="text-7xl font-black text-indigo-600 mb-6">404</p>
-    <h1 class="text-4xl font-black text-gray-900 mb-4">{t.notFoundTitle}</h1>
-    <p class="text-gray-600 mb-10">{t.notFoundText}</p>
-    <a href="/" class="inline-block bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
-      {t.backHome}
-    </a>
-  </div>
+  <section class="border-b border-neutral-200">
+    <div class={`${container} py-24 md:py-32`}>
+      <p class={`${label} text-accent`}>HTTP 404 · {Astro.url.pathname}</p>
+      <h1 class="mt-5 text-4xl font-semibold tracking-tight text-ink md:text-6xl">{t.notFoundTitle}</h1>
+      <p class="mt-6 max-w-xl text-lg text-neutral-600">{t.notFoundText}</p>
+      <a href="/" class={`mt-10 ${buttonClass('glowny')}`}>{t.backHome} <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
 </BaseLayout>

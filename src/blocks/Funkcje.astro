@@ -1,0 +1,43 @@
+---
+import type { PyxisBlock, PyxisPageLink } from '@/lib/pyxis/types';
+import { fetchSite } from '@/lib/pyxis/client';
+import { getTranslations } from '@/lib/translations';
+import { container, index, label } from '@/lib/ui';
+import Icon from '@/components/Icon.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+
+interface Props {
+  block: PyxisBlock<{
+    naglowek: string | null;
+    wstep: string | null;
+    elementy: { ikona: string | null; tytul: string | null; opis: string | null; strona: PyxisPageLink | null }[] | null;
+  }>;
+}
+
+const { naglowek, wstep, elementy } = Astro.props.block.data;
+const items = elementy ?? [];
+const t = getTranslations((await fetchSite()).language);
+const columns = items.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3';
+---
+
+<section class="border-b border-neutral-200 py-20">
+  <div class={container}>
+    <SectionHeading heading={naglowek} intro={wstep} />
+
+    <div class={`mt-14 grid gap-px border border-neutral-200 bg-neutral-200 sm:grid-cols-2 ${columns}`}>
+      {items.map((item, position) => (
+        <div class="flex flex-col bg-white p-7">
+          <div class="flex items-center justify-between text-neutral-400">
+            <span class={label}>{index(position)}</span>
+            <Icon name={item.ikona} class="h-5 w-5 text-ink" />
+          </div>
+          <h3 class="mt-8 text-lg font-semibold text-ink">{item.tytul}</h3>
+          {item.opis && <p class="mt-2 flex-1 text-[0.95rem] leading-relaxed text-neutral-600">{item.opis}</p>}
+          {item.strona && (
+            <a href={item.strona.full_url} class={`${label} mt-6 text-ink hover:text-accent`}>{t.learnMore} →</a>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,36 @@
+---
+import type { PyxisBlock, PyxisMedia } from '@/lib/pyxis/types';
+import { container, label } from '@/lib/ui';
+
+interface Props {
+  block: PyxisBlock<{
+    etykieta: string | null;
+    naglowek: string | null;
+    tresc: string | null;
+    obraz: PyxisMedia | null;
+    uklad: string | null;
+    wyroznione: boolean | null;
+  }>;
+}
+
+const { etykieta, naglowek, tresc, obraz, uklad, wyroznione } = Astro.props.block.data;
+const imageFirst = uklad === 'obraz_lewo';
+---
+
+<section class={`border-b border-neutral-200 py-20 ${wyroznione ? 'bg-neutral-50' : ''}`}>
+  <div class={`${container} grid items-center gap-12 lg:grid-cols-2 lg:gap-16`}>
+    <div class={imageFirst ? 'lg:order-2' : ''}>
+      {etykieta && <p class={`${label} text-accent`}>{etykieta}</p>}
+      {naglowek && <h2 class="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-4xl">{naglowek}</h2>}
+      {/* HTML from the CMS rich editor, written by the site's editors. */}
+      {tresc && <div class="pyxis-prose mt-6" set:html={tresc} />}
+    </div>
+
+    {obraz?.url && (
+      <figure class={imageFirst ? 'lg:order-1' : ''}>
+        <img src={obraz.url} alt={obraz.alt ?? ''} width={obraz.width ?? undefined} height={obraz.height ?? undefined} loading="lazy" class="w-full border border-ink" />
+        {obraz.alt && <figcaption class={`${label} mt-3 text-neutral-500`}>↳ {obraz.alt}</figcaption>}
+      </figure>
+    )}
+  </div>
+</section>

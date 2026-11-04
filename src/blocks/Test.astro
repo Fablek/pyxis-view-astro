@@ -1,5 +1,6 @@
 ---
 import type { PyxisBlock } from '@/lib/pyxis/types';
+import { container } from '@/lib/ui';
 
 interface Props {
   block: PyxisBlock<{
@@ -11,7 +12,9 @@ interface Props {
 const { section_title, test } = Astro.props.block.data;
 ---
 
-<section class="my-10 rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
-  {section_title && <h2 class="text-3xl font-bold text-gray-900">{section_title}</h2>}
-  {test && <p class="mt-3 text-lg text-gray-600">{test}</p>}
+<section class="border-b border-neutral-200 py-12">
+  <div class={`${container} grid gap-4 md:grid-cols-[1fr_2fr] md:gap-12`}>
+    <div>{section_title && <h2 class="text-2xl font-semibold text-ink">{section_title}</h2>}</div>
+    {test && <p class="text-lg text-neutral-600">{test}</p>}
+  </div>
 </section>

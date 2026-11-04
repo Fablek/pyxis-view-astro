@@ -2,6 +2,7 @@
 import type { PyxisBlock } from '@/lib/pyxis/types';
 import { fetchSite } from '@/lib/pyxis/client';
 import { getTranslations } from '@/lib/translations';
+import { container, label } from '@/lib/ui';
 
 /** Form definition returned by the "Formularz" field of the pyxis-forms plugin. */
 interface PyxisForm {
@@ -26,12 +27,14 @@ interface Props {
 
 const form = Astro.props.block.data.formularz;
 const t = getTranslations((await fetchSite()).language);
-const inputClass = 'w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200';
+const inputClass = 'w-full border border-neutral-300 bg-white px-4 py-3 text-ink focus:border-ink focus:outline-none';
 ---
 
 {form && (
-  <section class="my-10 max-w-2xl rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
-    <h2 class="mb-6 text-2xl font-bold text-gray-900">{form.title}</h2>
+  <section class="py-14 md:py-16">
+  <div class={`${container} grid gap-8 md:grid-cols-[1fr_2fr] md:gap-12`}>
+  <h2 class="text-2xl font-semibold tracking-tight text-ink md:text-3xl">{form.title}</h2>
+  <div class="max-w-2xl">
 
     <form
       data-pyxis-form
@@ -44,13 +47,13 @@ const inputClass = 'w-full rounded-lg border border-gray-300 bg-white px-4 py-2.
         <div>
           {field.type === 'checkbox' ? (
             <label class="flex items-center gap-3">
-              <input type="checkbox" name={field.name} value="1" required={field.required} class="h-4 w-4 rounded border-gray-300" />
-              <span class="text-gray-700">{field.label}</span>
+              <input type="checkbox" name={field.name} value="1" required={field.required} class="h-4 w-4 accent-ink" />
+              <span class="text-ink">{field.label}</span>
             </label>
           ) : (
             <>
-              <label for={`${form.id}-${field.name}`} class="mb-1.5 block font-medium text-gray-700">
-                {field.label}{field.required && <span class="text-red-500"> *</span>}
+              <label for={`${form.id}-${field.name}`} class={`${label} mb-2 block text-neutral-500`}>
+                {field.label}{field.required && <span class="text-accent"> *</span>}
               </label>
               {field.type === 'textarea' ? (
                 <textarea id={`${form.id}-${field.name}`} name={field.name} rows="5" required={field.required} class={inputClass} />
@@ -64,19 +67,21 @@ const inputClass = 'w-full rounded-lg border border-gray-300 bg-white px-4 py-2.
               )}
             </>
           )}
-          <p data-error-for={field.name} class="mt-1 hidden text-sm text-red-600"></p>
+          <p data-error-for={field.name} class="mt-1 hidden text-sm text-accent"></p>
         </div>
       ))}
 
       {/* Spam trap: bots fill it in, people do not see it. */}
       <input type="text" name={form.honeypot} tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden" />
 
-      <button type="submit" class="rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60">
+      <button type="submit" class="border border-ink bg-ink px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-700 disabled:opacity-60">
         {t.formSubmit}
       </button>
 
-      <p data-form-status role="status" class="hidden rounded-lg px-4 py-3"></p>
+      <p data-form-status role="status" class="hidden px-4 py-3"></p>
     </form>
+  </div>
+  </div>
   </section>
 )}
 
@@ -98,7 +103,7 @@ const inputClass = 'w-full rounded-lg border border-gray-300 bg-white px-4 py-2.
 
       const showStatus = (message: string, isSuccess: boolean) => {
         status.textContent = message;
-        status.className = `rounded-lg px-4 py-3 ${isSuccess ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`;
+        status.className = `border px-4 py-3 ${isSuccess ? 'border-ink text-ink' : 'border-accent text-accent'}`;
       };
 
       try {

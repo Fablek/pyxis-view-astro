@@ -1,36 +1,48 @@
 @import "tailwindcss";
 
-/* Content of the rich editor (the "Tekst" block): HTML from the CMS without Tailwind classes. */
+@theme {
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+  /* Graphite of the Pyxis logo and one signal accent, used only for labels, numbers and focus. */
+  --color-ink: #1c1c1c;
+  --color-accent: #e5531a;
+}
+
+/* Content of the rich editor (e.g. the "Tekst" block): HTML from the CMS without Tailwind classes. */
 @layer components {
   .pyxis-prose {
-    @apply space-y-4 text-lg leading-relaxed text-gray-700;
+    @apply space-y-4 text-[1.0625rem] leading-relaxed text-neutral-700;
   }
 
   .pyxis-prose h2 {
-    @apply text-2xl font-bold text-gray-900;
+    @apply text-2xl font-semibold text-ink;
   }
 
   .pyxis-prose h3 {
-    @apply text-xl font-bold text-gray-900;
+    @apply text-xl font-semibold text-ink;
   }
 
   .pyxis-prose a {
-    @apply font-medium text-indigo-600 underline hover:no-underline;
+    @apply text-ink underline decoration-accent decoration-2 underline-offset-4 hover:decoration-ink;
   }
 
   .pyxis-prose strong {
-    @apply font-semibold text-gray-900;
+    @apply font-semibold text-ink;
+  }
+
+  .pyxis-prose code {
+    @apply border border-neutral-200 bg-neutral-50 px-1.5 py-0.5 font-mono text-[0.85em] text-ink;
   }
 
   .pyxis-prose ul {
-    @apply list-disc space-y-2 pl-6;
+    @apply list-[square] space-y-2 pl-5 marker:text-accent;
   }
 
   .pyxis-prose ol {
-    @apply list-decimal space-y-2 pl-6;
+    @apply list-decimal space-y-2 pl-5 marker:font-mono marker:text-accent;
   }
 
   .pyxis-prose blockquote {
-    @apply border-l-4 border-indigo-200 pl-4 italic;
+    @apply border-l-2 border-ink pl-4;
   }
 }

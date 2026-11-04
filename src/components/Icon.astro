@@ -1,0 +1,17 @@
+---
+import { icons } from '@/lib/icons';
+
+interface Props {
+  name: string | null | undefined;
+  class?: string;
+}
+
+const { name, class: className = 'h-6 w-6' } = Astro.props;
+const path = name ? icons[name] : undefined;
+---
+
+{path && (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" class={className}>
+    <path stroke-linecap="round" stroke-linejoin="round" d={path} />
+  </svg>
+)}

@@ -1,0 +1,36 @@
+---
+import type { PyxisBlock, PyxisLink, PyxisMedia } from '@/lib/pyxis/types';
+import { container, index, label, linkTarget } from '@/lib/ui';
+import SectionHeading from '@/components/SectionHeading.astro';
+
+interface Props {
+  block: PyxisBlock<{
+    naglowek: string | null;
+    elementy: { zdjecie: PyxisMedia | null; tytul: string | null; opis: string | null; link: PyxisLink | null }[] | null;
+  }>;
+}
+
+const { naglowek, elementy } = Astro.props.block.data;
+---
+
+<section class="border-b border-neutral-200 py-20">
+  <div class={container}>
+    <SectionHeading heading={naglowek} />
+
+    <div class="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
+      {(elementy ?? []).map((item, position) => (
+        <article class="group">
+          {item.zdjecie?.url && (
+            <img src={item.zdjecie.url} alt={item.zdjecie.alt ?? ''} loading="lazy" class="aspect-[4/3] w-full border border-neutral-200 object-cover grayscale transition duration-300 group-hover:grayscale-0" />
+          )}
+          <p class={`${label} mt-5 text-neutral-400`}>{index(position)}</p>
+          <h3 class="mt-2 text-xl font-semibold text-ink">{item.tytul}</h3>
+          {item.opis && <p class="mt-3 leading-relaxed text-neutral-600">{item.opis}</p>}
+          {item.link?.url && item.link.title && (
+            <a href={item.link.url} {...linkTarget(item.link.new_tab)} class={`${label} mt-5 inline-block text-ink hover:text-accent`}>{item.link.title} →</a>
+          )}
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

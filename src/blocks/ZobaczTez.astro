@@ -1,0 +1,31 @@
+---
+import type { PyxisBlock, PyxisPageLink } from '@/lib/pyxis/types';
+import { container, label } from '@/lib/ui';
+
+interface Props {
+  block: PyxisBlock<{
+    naglowek: string | null;
+    strony: PyxisPageLink[] | null;
+  }>;
+}
+
+const { naglowek, strony } = Astro.props.block.data;
+---
+
+{(strony ?? []).length > 0 && (
+  <section class="border-b border-neutral-200 bg-neutral-50 py-14">
+    <div class={`${container} grid gap-8 md:grid-cols-[1fr_2fr] md:gap-12`}>
+      {naglowek && <h2 class="text-2xl font-semibold tracking-tight text-ink">{naglowek}</h2>}
+      <ul class="border-t border-ink">
+        {strony!.map((page) => (
+          <li>
+            <a href={page.full_url} class="group flex items-center justify-between gap-6 border-b border-neutral-200 py-4">
+              <span class="font-medium text-ink group-hover:text-accent">{page.title}</span>
+              <span class={`${label} text-neutral-500`}>{page.full_url} →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

@@ -1,0 +1,42 @@
+---
+import Logo from './Logo.astro';
+import { navigation, projectLinks } from '@/lib/navigation';
+import { container, label } from '@/lib/ui';
+import type { Translations } from '@/lib/translations';
+
+interface Props {
+  t: Translations;
+}
+
+const { t } = Astro.props;
+---
+
+<footer class="bg-ink text-neutral-400">
+  <div class={`${container} grid gap-12 py-16 md:grid-cols-[2fr_1fr_1fr]`}>
+    <div class="max-w-sm">
+      <Logo onDark />
+      <p class="mt-5 text-sm leading-relaxed">{t.footerAbout}</p>
+    </div>
+
+    <div>
+      <p class={`${label} text-neutral-500`}>{t.footerPages}</p>
+      <ul class="mt-5 space-y-2.5 text-sm">
+        {navigation.map((item) => <li><a href={item.href} class="text-neutral-300 hover:text-white">{item.label}</a></li>)}
+      </ul>
+    </div>
+
+    <div>
+      <p class={`${label} text-neutral-500`}>{t.footerProject}</p>
+      <ul class="mt-5 space-y-2.5 text-sm">
+        {projectLinks.map((item) => <li><a href={item.href} target="_blank" rel="noopener noreferrer" class="text-neutral-300 hover:text-white">{item.label} ↗</a></li>)}
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class={`${container} flex flex-col gap-2 py-6 font-mono text-xs sm:flex-row sm:justify-between`}>
+      <p>© {new Date().getFullYear()} Pyxis CMS · {t.footerThesis}</p>
+      <p>{t.builtWith}</p>
+    </div>
+  </div>
+</footer>

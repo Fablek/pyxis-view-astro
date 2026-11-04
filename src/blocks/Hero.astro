@@ -1,28 +1,43 @@
 ---
-import type { PyxisBlock, PyxisLink } from '@/lib/pyxis/types';
+import type { PyxisBlock, PyxisLink, PyxisMedia } from '@/lib/pyxis/types';
+import { buttonClass, container, label, linkTarget } from '@/lib/ui';
 
 interface Props {
   block: PyxisBlock<{
+    etykieta: string | null;
     naglowek: string | null;
     opis: string | null;
-    przycisk: PyxisLink | null;
+    obraz: PyxisMedia | null;
+    przyciski: { link: PyxisLink | null; styl: string | null }[] | null;
   }>;
 }
 
-const { naglowek, opis, przycisk } = Astro.props.block.data;
+const { etykieta, naglowek, opis, obraz, przyciski } = Astro.props.block.data;
+const buttons = (przyciski ?? []).filter((button) => button.link?.url && button.link.title);
 ---
 
-<section class="my-10 rounded-3xl bg-indigo-600 px-8 py-16 text-white md:px-14">
-  {naglowek && <h2 class="max-w-3xl text-4xl font-black tracking-tight md:text-5xl">{naglowek}</h2>}
-  {opis && <p class="mt-6 max-w-2xl text-lg text-indigo-100">{opis}</p>}
-  {przycisk?.url && przycisk.title && (
-    <a
-      href={przycisk.url}
-      target={przycisk.new_tab ? '_blank' : undefined}
-      rel={przycisk.new_tab ? 'noopener noreferrer' : undefined}
-      class="mt-10 inline-block rounded-lg bg-white px-6 py-3 font-semibold text-indigo-700 transition hover:bg-indigo-50"
-    >
-      {przycisk.title}
-    </a>
-  )}
+<section class="border-b border-neutral-200">
+  <div class={`${container} grid gap-12 py-16 md:py-24 ${obraz?.url ? 'lg:grid-cols-[5fr_7fr] lg:items-center' : ''}`}>
+    <div class={obraz?.url ? '' : 'max-w-4xl'}>
+      {etykieta && <p class={`${label} text-accent`}>{etykieta}</p>}
+      {naglowek && <h1 class={`mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-ink md:text-5xl ${obraz?.url ? '' : 'lg:text-6xl'}`}>{naglowek}</h1>}
+      {opis && <p class="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-600">{opis}</p>}
+      {buttons.length > 0 && (
+        <div class="mt-10 flex flex-wrap gap-3">
+          {buttons.map((button) => (
+            <a href={button.link!.url!} {...linkTarget(button.link!.new_tab)} class={buttonClass(button.styl)}>
+              {button.link!.title} <span aria-hidden="true">{button.link!.new_tab ? '↗' : '→'}</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+
+    {obraz?.url && (
+      <figure>
+        <img src={obraz.url} alt={obraz.alt ?? ''} width={obraz.width ?? undefined} height={obraz.height ?? undefined} class="w-full border border-ink" />
+        {obraz.alt && <figcaption class={`${label} mt-3 text-neutral-500`}>↳ {obraz.alt}</figcaption>}
+      </figure>
+    )}
+  </div>
 </section>

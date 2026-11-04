@@ -1,0 +1,41 @@
+---
+import type { PyxisLink } from '@/lib/pyxis/types';
+import { fetchSite } from '@/lib/pyxis/client';
+import { getTranslations } from '@/lib/translations';
+import { container, label, linkTarget } from '@/lib/ui';
+
+/** Static fields of the "kontakt" field group (contact page). */
+interface Props {
+  fields: {
+    repozytorium?: PyxisLink | null;
+    dokumentacja?: PyxisLink | null;
+    zgloszenia?: PyxisLink | null;
+    uczelnia?: { nazwa: string | null; kierunek: string | null; rok: string | null } | null;
+  };
+}
+
+const { repozytorium, dokumentacja, zgloszenia, uczelnia } = Astro.props.fields;
+const t = getTranslations((await fetchSite()).language);
+const links = [
+  { label: t.contactRepository, link: repozytorium },
+  { label: t.contactDocs, link: dokumentacja },
+  { label: t.contactIssues, link: zgloszenia },
+].filter((item) => item.link?.url);
+---
+
+<section class="border-b border-neutral-200 py-16">
+  <dl class={`${container} border-t border-ink`}>
+    {links.map((item) => (
+      <div class="grid gap-1 border-b border-neutral-200 py-5 md:grid-cols-[1fr_2fr] md:gap-12">
+        <dt class={`${label} pt-1 text-neutral-500`}>{item.label}</dt>
+        <dd><a href={item.link!.url!} {...linkTarget(item.link!.new_tab)} class="font-medium text-ink underline decoration-accent decoration-2 underline-offset-4 hover:decoration-ink">{item.link!.title ?? item.link!.url}</a></dd>
+      </div>
+    ))}
+    {uczelnia?.nazwa && (
+      <div class="grid gap-1 border-b border-neutral-200 py-5 md:grid-cols-[1fr_2fr] md:gap-12">
+        <dt class={`${label} pt-1 text-neutral-500`}>{t.contactUniversity}</dt>
+        <dd class="text-ink">{uczelnia.nazwa}<span class="text-neutral-500"> · {[uczelnia.kierunek, uczelnia.rok].filter(Boolean).join(' · ')}</span></dd>
+      </div>
+    )}
+  </dl>
+</section>

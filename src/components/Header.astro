@@ -1,0 +1,50 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { navigation } from '@/lib/navigation';
+import { container, label } from '@/lib/ui';
+
+interface Props {
+  menuLabel: string;
+}
+
+const { menuLabel } = Astro.props;
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) => currentPath === href || currentPath.startsWith(`${href}/`);
+---
+
+<header class="sticky top-0 z-40 border-b border-neutral-200 bg-white">
+  <div class={`${container} flex h-16 items-center justify-between gap-6`}>
+    <Logo />
+
+    <nav class="hidden h-full items-stretch md:flex">
+      {navigation.map((item) => (
+        <a
+          href={item.href}
+          class={`flex items-center border-b-2 px-4 text-sm transition-colors ${isActive(item.href) ? 'border-accent text-ink' : 'border-transparent text-neutral-500 hover:text-ink'}`}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="https://github.com/Fablek/pyxis-cms" target="_blank" rel="noopener noreferrer" class={`${label} text-neutral-500 hover:text-ink`}>GitHub ↗</a>
+
+      {/* Mobile menu without JavaScript: <details> opens and closes the list. */}
+      <details class="relative md:hidden">
+        <summary class="flex h-10 w-10 cursor-pointer list-none items-center justify-center border border-neutral-300 text-ink [&::-webkit-details-marker]:hidden" aria-label={menuLabel}>
+          <Icon name="menu" class="h-5 w-5" />
+        </summary>
+        <nav class="absolute right-0 mt-2 w-60 border border-ink bg-white">
+          {navigation.map((item) => (
+            <a href={item.href} class={`block border-b border-neutral-200 px-4 py-3 text-sm last:border-b-0 ${isActive(item.href) ? 'text-accent' : 'text-ink hover:bg-neutral-50'}`}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>

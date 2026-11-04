@@ -1,0 +1,30 @@
+---
+import type { PyxisBlock } from '@/lib/pyxis/types';
+import { container, label } from '@/lib/ui';
+import SectionHeading from '@/components/SectionHeading.astro';
+
+interface Props {
+  block: PyxisBlock<{
+    naglowek: string | null;
+    wydarzenia: { etykieta: string | null; data: string | null; opis: string | null }[] | null;
+  }>;
+}
+
+const { naglowek, wydarzenia } = Astro.props.block.data;
+---
+
+<section class="border-b border-neutral-200 py-20">
+  <div class={container}>
+    <SectionHeading heading={naglowek} />
+
+    <ol class="mt-12 border-t border-ink">
+      {(wydarzenia ?? []).map((event) => (
+        <li class="grid gap-2 border-b border-neutral-200 py-5 md:grid-cols-[8rem_10rem_1fr] md:gap-8">
+          <span class="font-mono text-sm font-medium text-ink">{event.etykieta}</span>
+          <span class={`${label} pt-0.5 text-neutral-500`}>{event.data}</span>
+          {event.opis && <p class="leading-relaxed text-neutral-600">{event.opis}</p>}
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

@@ -3,6 +3,8 @@ import '../styles/global.css';
 import type { PyxisSeo } from '@/lib/pyxis/types';
 import { fetchSite } from '@/lib/pyxis/client';
 import { getTranslations } from '@/lib/translations';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
 
 interface Props {
   title: string;
@@ -20,11 +22,11 @@ const metaTitle = seo?.title ?? `${title} | Pyxis CMS`;
 const shareTitle = seo?.title ?? title;
 const image = seo?.og_image;
 ---
-<html lang={site.language}>
+<html lang={site.language} class="scroll-smooth">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-        <title>{metaTitle}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{metaTitle}</title>
     {seo?.description && <meta name="description" content={seo.description} />}
     {(seo?.noindex || isPreview) && <meta name="robots" content="noindex, nofollow" />}
 
@@ -41,35 +43,25 @@ const image = seo?.og_image;
         <meta name="twitter:card" content="summary_large_image" />
       </>
     )}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&family=Geist+Mono:wght@400;500&display=swap" />
 </head>
-<body class="bg-gray-50 text-gray-900 flex flex-col min-h-screen">
-    
+<body class="flex min-h-screen flex-col bg-white font-sans text-ink antialiased">
     {isPreview && (
-        <div class="bg-amber-400 text-black py-1 text-center text-xs font-bold uppercase tracking-widest flex justify-center items-center gap-4">
+        <div class="flex items-center justify-center gap-4 bg-accent py-2 font-mono text-xs uppercase tracking-[0.14em] text-white">
             {t.previewActive}
-            <a href="/api/exit-preview" class="underline hover:no-underline font-black">{t.exitPreview}</a>
+            <a href="/api/exit-preview" class="underline hover:no-underline">{t.exitPreview}</a>
         </div>
     )}
-    
-    <nav class="bg-white border-b border-gray-200 py-4 shadow-sm">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <a href="/" class="text-xl font-bold text-indigo-600 tracking-tight">Pyxis CMS</a>
-            <div class="space-x-4 text-sm font-medium text-gray-600">
-                <a href="/" class="hover:text-indigo-600 transition">{t.home}</a>
-            </div>
-        </div>
-    </nav>
+
+    <Header menuLabel={t.menu} />
 
     <main class="flex-1">
         <slot />
     </main>
 
-    <footer class="bg-white border-t border-gray-200 py-8">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500 text-sm">
-                &copy; {new Date().getFullYear()} Pyxis CMS. {t.builtWith}
-            </p>
-        </div>
-    </footer>
+    <Footer t={t} />
 </body>
 </html>

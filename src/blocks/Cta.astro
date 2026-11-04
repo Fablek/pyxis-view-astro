@@ -1,0 +1,32 @@
+---
+import type { PyxisBlock, PyxisLink } from '@/lib/pyxis/types';
+import { buttonClass, container, linkTarget } from '@/lib/ui';
+
+interface Props {
+  block: PyxisBlock<{
+    naglowek: string | null;
+    opis: string | null;
+    przycisk: { link: PyxisLink | null; styl: string | null } | null;
+    ciemne: boolean | null;
+  }>;
+}
+
+const { naglowek, opis, przycisk, ciemne } = Astro.props.block.data;
+const link = przycisk?.link;
+---
+
+<section class={ciemne ? 'bg-ink text-white' : 'border-b border-neutral-200 bg-neutral-50 text-ink'}>
+  <div class={`${container} grid gap-8 py-16 md:grid-cols-[2fr_1fr] md:items-end md:py-20`}>
+    <div>
+      {naglowek && <h2 class="text-3xl font-semibold tracking-tight md:text-4xl">{naglowek}</h2>}
+      {opis && <p class={`mt-4 max-w-2xl text-lg ${ciemne ? 'text-neutral-400' : 'text-neutral-600'}`}>{opis}</p>}
+    </div>
+    {link?.url && link.title && (
+      <div class="md:text-right">
+        <a href={link.url} {...linkTarget(link.new_tab)} class={buttonClass(przycisk?.styl, Boolean(ciemne))}>
+          {link.title} <span aria-hidden="true">{link.new_tab ? '↗' : '→'}</span>
+        </a>
+      </div>
+    )}
+  </div>
+</section>

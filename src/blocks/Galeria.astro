@@ -1,29 +1,33 @@
 ---
 import type { PyxisBlock, PyxisMedia } from '@/lib/pyxis/types';
+import { container, index, label } from '@/lib/ui';
+import SectionHeading from '@/components/SectionHeading.astro';
 
 interface Props {
   block: PyxisBlock<{
+    naglowek: string | null;
     zdjecia: PyxisMedia[] | null;
   }>;
 }
 
+const { naglowek } = Astro.props.block.data;
 const images = (Astro.props.block.data.zdjecia ?? []).filter((image) => image.url);
 ---
 
 {images.length > 0 && (
-  <div class="my-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-    {images.map((image) => (
-      <figure>
-        <img
-          src={image.url}
-          alt={image.alt ?? ''}
-          width={image.width ?? undefined}
-          height={image.height ?? undefined}
-          loading="lazy"
-          class="aspect-[16/10] w-full rounded-xl object-cover object-top shadow-sm ring-1 ring-gray-200"
-        />
-        {(image.title ?? image.alt) && <figcaption class="mt-2 text-sm text-gray-500">{image.title ?? image.alt}</figcaption>}
-      </figure>
-    ))}
-  </div>
+  <section class="border-b border-neutral-200 py-20">
+    <div class={container}>
+      <SectionHeading heading={naglowek} />
+      <div class="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        {images.map((image, position) => (
+          <figure>
+            <a href={image.url} target="_blank" rel="noopener noreferrer" class="block border border-neutral-300 transition-colors hover:border-ink">
+              <img src={image.url} alt={image.alt ?? ''} width={image.width ?? undefined} height={image.height ?? undefined} loading="lazy" class="aspect-[16/10] w-full object-cover object-top" />
+            </a>
+            <figcaption class={`${label} mt-3 text-neutral-500`}><span class="text-ink">{index(position)}</span> · {image.title ?? image.alt}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
 )}

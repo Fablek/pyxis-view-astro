@@ -1,0 +1,26 @@
+---
+import type { PyxisBlock } from '@/lib/pyxis/types';
+import { container } from '@/lib/ui';
+
+interface Props {
+  block: PyxisBlock<{
+    elementy: { wartosc: number | string | null; sufiks: string | null; opis: string | null }[] | null;
+  }>;
+}
+
+const items = Astro.props.block.data.elementy ?? [];
+const columns = { 1: 'lg:grid-cols-1', 2: 'lg:grid-cols-2', 3: 'lg:grid-cols-3' }[items.length] ?? 'lg:grid-cols-4';
+---
+
+{items.length > 0 && (
+  <section class="border-b border-neutral-200">
+    <dl class={`${container} grid sm:grid-cols-2 ${columns}`}>
+      {items.map((item) => (
+        <div class="border-neutral-200 py-10 sm:border-l sm:px-8 sm:first:border-l-0 sm:first:pl-0">
+          <dt class="text-5xl font-semibold tabular-nums tracking-tight text-ink">{item.wartosc}<span class="text-accent">{item.sufiks}</span></dt>
+          <dd class="mt-3 text-sm text-neutral-500">{item.opis}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+)}
